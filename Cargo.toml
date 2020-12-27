@@ -1,0 +1,16 @@
+[package]
+name = "large-sql-inserts"
+version = "0.1.0"
+authors = ["Kirill Bulatov <mail4score@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+#tokio = { version = "1.0", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "0.2", features = ["macros", "rt-threaded"] }
+sqlx = { version = "0.4", features = ["runtime-tokio-rustls", "mysql", "migrate", "chrono", "decimal"] }
+mysql_async = "0.25"
+chrono = "0.4.19"
+rust_decimal = "1.8.1"
+
+log = "0.4.11"
+env_logger = "0.8.2"
