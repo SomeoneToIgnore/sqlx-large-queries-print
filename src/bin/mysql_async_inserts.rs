@@ -4,7 +4,6 @@ use large_sql_inserts::{
 };
 use mysql_async::{prelude::Queryable, Params, Value};
 use std::time::Instant;
-use tokio::time::Duration;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -35,6 +34,5 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         "Successfully inserted the data waiting {} seconds before exiting",
         FINAL_SLEEP_DURATION_SECONDS
     );
-    std::thread::sleep(Duration::from_secs(FINAL_SLEEP_DURATION_SECONDS));
     Ok(())
 }

@@ -3,7 +3,7 @@ use large_sql_inserts::{
     INSERT_REPEAT_TIMES, NUMBER_OF_ITEMS_TO_INSERT,
 };
 use sqlx::mysql::MySqlPoolOptions;
-use std::time::{Duration, Instant};
+use std::time::Instant;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -43,6 +43,5 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         "Successfully inserted the data waiting {} seconds before exiting",
         FINAL_SLEEP_DURATION_SECONDS
     );
-    std::thread::sleep(Duration::from_secs(FINAL_SLEEP_DURATION_SECONDS));
     Ok(())
 }

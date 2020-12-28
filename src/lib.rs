@@ -1,7 +1,7 @@
 use sqlx::mysql::MySqlPoolOptions;
 
 pub const DB_CONNECTION_URL: &str = "mysql://test_user:test_password@localhost:3306/test_database";
-pub const NUMBER_OF_ITEMS_TO_INSERT: usize = 6_500;
+pub const NUMBER_OF_ITEMS_TO_INSERT: usize = 1_000;
 pub const INSERT_REPEAT_TIMES: usize = 30;
 pub const FINAL_SLEEP_DURATION_SECONDS: u64 = 5;
 
