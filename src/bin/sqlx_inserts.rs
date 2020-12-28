@@ -2,8 +2,11 @@ use large_sql_inserts::{
     get_insert_sql, init_tests, DB_CONNECTION_URL, FINAL_SLEEP_DURATION_SECONDS,
     INSERT_REPEAT_TIMES, NUMBER_OF_ITEMS_TO_INSERT,
 };
-use sqlx::mysql::MySqlPoolOptions;
-use std::time::Instant;
+use sqlx::{
+    mysql::{MySqlConnectOptions, MySqlPoolOptions},
+    ConnectOptions,
+};
+use std::{str::FromStr, time::Instant};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -12,11 +15,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let insert_sql = get_insert_sql();
     let insert_values = [1; NUMBER_OF_ITEMS_TO_INSERT];
 
+    let mut connection_options = MySqlConnectOptions::from_str(DB_CONNECTION_URL)?;
+    // uncomment this to improve the performance
+    // connection_options
+    //     .log_statements(log::LevelFilter::Off)
+    //     .log_slow_statements(log::LevelFilter::Off, std::time::Duration::default());
     let pool = MySqlPoolOptions::new()
         // for consistency, put the same limits as the mysql_async default ones
         .min_connections(10)
         .max_connections(100)
-        .connect(DB_CONNECTION_URL)
+        .connect_with(connection_options)
         .await?;
     let mut tx = pool.begin().await?;
 
