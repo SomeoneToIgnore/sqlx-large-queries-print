@@ -781,11 +781,9 @@ dependencies = [
 name = "large-sql-inserts"
 version = "0.1.0"
 dependencies = [
- "chrono",
  "env_logger",
  "log",
  "mysql_async",
- "rust_decimal",
  "sqlx",
  "tokio",
 ]
@@ -1789,7 +1787,6 @@ dependencies = [
  "bitflags",
  "byteorder",
  "bytes",
- "chrono",
  "crc",
  "crossbeam-channel 0.5.0",
  "crossbeam-queue 0.3.1",
@@ -1812,7 +1809,6 @@ dependencies = [
  "percent-encoding",
  "rand",
  "rsa",
- "rust_decimal",
  "rustls",
  "sha-1 0.9.2",
  "sha2 0.9.2",
