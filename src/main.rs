@@ -4,9 +4,9 @@ use sqlx::{
 };
 use std::{str::FromStr, time::Instant};
 
-pub const DB_CONNECTION_URL: &str = "mysql://test_user:test_password@localhost:3306/test_database";
-pub const NUMBER_OF_ITEMS_TO_INSERT: usize = 1_000;
-pub const INSERT_REPEAT_TIMES: usize = 10;
+const DB_CONNECTION_URL: &str = "mysql://test_user:test_password@localhost:3306/test_database";
+const NUMBER_OF_ITEMS_TO_INSERT: usize = 1_000;
+const INSERT_REPEAT_TIMES: usize = 10;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -24,9 +24,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     //     .log_statements(log::LevelFilter::Off)
     //     .log_slow_statements(log::LevelFilter::Off, std::time::Duration::default());
     let pool = MySqlPoolOptions::new()
-        // for consistency, put the same limits as the mysql_async default ones
-        .min_connections(10)
-        .max_connections(100)
         .connect_with(connection_options)
         .await?;
     let mut tx = pool.begin().await?;
