@@ -1,18 +1,21 @@
-use large_sql_inserts::{
-    get_insert_sql, init_tests, DB_CONNECTION_URL, FINAL_SLEEP_DURATION_SECONDS,
-    INSERT_REPEAT_TIMES, NUMBER_OF_ITEMS_TO_INSERT,
-};
 use sqlx::{
     mysql::{MySqlConnectOptions, MySqlPoolOptions},
     ConnectOptions,
 };
 use std::{str::FromStr, time::Instant};
 
+pub const DB_CONNECTION_URL: &str = "mysql://test_user:test_password@localhost:3306/test_database";
+pub const NUMBER_OF_ITEMS_TO_INSERT: usize = 1_000;
+pub const INSERT_REPEAT_TIMES: usize = 10;
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     init_tests().await;
 
-    let insert_sql = get_insert_sql();
+    let insert_sql = format!(
+        "insert into test_table(a) values {}",
+        sql_parameter_groups_string(1, NUMBER_OF_ITEMS_TO_INSERT)
+    );
     let insert_values = [1; NUMBER_OF_ITEMS_TO_INSERT];
 
     let mut connection_options = MySqlConnectOptions::from_str(DB_CONNECTION_URL)?;
@@ -47,9 +50,32 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     tx.commit().await?;
 
-    log::info!(
-        "Successfully inserted the data waiting {} seconds before exiting",
-        FINAL_SLEEP_DURATION_SECONDS
-    );
+    log::info!("Successfully inserted the data",);
     Ok(())
+}
+
+pub async fn init_tests() {
+    env_logger::builder()
+        .filter_level(log::LevelFilter::Debug)
+        .init();
+
+    let pool = MySqlPoolOptions::new()
+        .min_connections(10)
+        .max_connections(100)
+        .connect(DB_CONNECTION_URL)
+        .await
+        .expect("Failed to connect for the migration");
+    sqlx::migrate!("./migrations")
+        .run(&pool)
+        .await
+        .expect("Failed to perform the test migration");
+    log::info!("Migration successful");
+}
+
+fn sql_parameter_groups_string(group_size: usize, groups_count: usize) -> String {
+    let mut parameters_group = "?,".repeat(group_size);
+    parameters_group.pop(); // trailing comma
+    let mut parameters_group = format!("({}),", parameters_group).repeat(groups_count);
+    parameters_group.pop(); // trailing comma
+    parameters_group
 }
